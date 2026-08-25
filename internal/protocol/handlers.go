@@ -119,7 +119,7 @@ func (s *Server) closeAnimation(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, "invalid json")
 		return
 	}
-	if err := s.service.CloseSession(r.Context(), input.VisitorID); err != nil {
+	if err := s.service.CloseAndWait(r.Context(), input.VisitorID); err != nil {
 		writeError(w, http.StatusUnprocessableEntity, err.Error())
 		return
 	}
