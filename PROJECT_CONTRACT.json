@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2858,
+    "production_files": 32,
+    "production_packages": 9,
+    "test_files": 9,
+    "production_functions": 242,
+    "decision_points": 383
+  },
+  "persistence": {
+    "module": "modernc.org/sqlite",
+    "entities": [
+      "Memorial",
+      "Candle",
+      "AnimationJob",
+      "AuditEntry"
+    ],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {
+      "steps": [
+        "接收纪念馆标题和纪念文字",
+        "保存 Memorial、Session 和 Candle 实体",
+        "启动确定性的星点动画",
+        "返回可供访客互动的场景快照"
+      ],
+      "test": "TestPrimaryWorkflow"
+    },
+    {
+      "steps": [
+        "读取当前会话和烛光状态",
+        "规范化拖拽角度和缩放值",
+        "持久化视角并追加审计事件",
+        "返回包含星点窗口的场景"
+      ],
+      "test": "TestReflectionWorkflow"
+    },
+    {
+      "steps": [
+        "接收访客关闭互动的请求",
+        "停止星点任务并回到安静状态",
+        "保存会话和 Candle 的关闭状态",
+        "确认关闭后星点计数不再增长"
+      ],
+      "test": "TestCloseWorkflowReturnsToQuietState"
+    }
+  ]
+}
