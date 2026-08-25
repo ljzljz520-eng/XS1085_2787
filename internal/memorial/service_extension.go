@@ -187,12 +187,15 @@ func MergeEvents(primary, secondary []SceneEvent) []SceneEvent {
 }
 
 func (s *Service) CloseAndWait(ctx context.Context, sessionID string) error {
-	if err := s.CloseSession(ctx, sessionID); err != nil {
-		return err
-	}
+	// Capture the running animation before CloseSession deletes it from the
+	// map. Otherwise the lookup below reads nil and we return before the
+	// goroutine has actually stopped — letting sparks keep being generated.
 	s.mu.RLock()
 	animation := s.animations[sessionID]
 	s.mu.RUnlock()
+	if err := s.CloseSession(ctx, sessionID); err != nil {
+		return err
+	}
 	if animation != nil {
 		animation.Wait()
 	}

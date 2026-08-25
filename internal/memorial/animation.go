@@ -51,8 +51,15 @@ func (a *SparkAnimation) run() {
 
 func (a *SparkAnimation) Stop() {
 	a.mu.Lock()
+	defer a.mu.Unlock()
+	// The closed flag doubles as the guard that makes cancel idempotent:
+	// the run loop only exits via the cancelled context, so unless we
+	// cancel here the goroutine keeps emitting sparks forever.
+	if a.closed {
+		return
+	}
 	a.closed = true
-	a.mu.Unlock()
+	a.cancel()
 }
 
 func (a *SparkAnimation) Wait() {
